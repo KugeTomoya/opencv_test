@@ -325,7 +325,6 @@ main(int argc, char *argv[])
     }
     if(micros()-readT > 10){
       //printf("切っと");
-      int hoge;
       /*if (kbhit()) {
         if(hit > 9){
           hit = 0;
