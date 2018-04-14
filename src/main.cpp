@@ -104,7 +104,11 @@ main(int argc, char *argv[])
   int old_hit = 0;
 
   //データの数//
-  int  num[11]={};
+  int num[11]={};
+  //データの数(+)//
+  int  p_num[11]={};
+  //データの数(+)//
+  int  m_num[11]={};
   //データ(+)の合計//
   float p_total[11]={};
   //データ(-)の合計//
@@ -204,8 +208,10 @@ main(int argc, char *argv[])
           case 1:
             num[1]+=1;
             if(create.judge()>=0){
+              p_num[1]+=1;
               p_total[1]=p_total[1]+create.judge();
             }else{
+              m_num[1]+=1;
               m_total[1]=m_total[1]+create.judge();
             }
             p_average[1]=p_total[1]/num[1];
@@ -214,8 +220,10 @@ main(int argc, char *argv[])
           case 2:
             num[2]+=1;
             if(create.judge()>=0){
+              p_num[2]+=1;
               p_total[2]=p_total[2]+create.judge();
             }else{
+              m_num[2]+=1;
               m_total[2]=m_total[2]+create.judge();
             }
             p_average[2]=p_total[2]/num[2];
@@ -224,8 +232,10 @@ main(int argc, char *argv[])
           case 3:
             num[3]+=1;
             if(create.judge()>=0){
+              p_num[3]+=1;
               p_total[3]=p_total[3]+create.judge();
             }else{
+              m_num[3]+=1;
               m_total[3]=m_total[3]+create.judge();
             }
             p_average[3]=p_total[3]/num[3];
@@ -234,8 +244,10 @@ main(int argc, char *argv[])
           case 4:
               num[4]+=1;
               if(create.judge()>=0){
+                p_num[4]+=1;
                 p_total[4]=p_total[4]+create.judge();
               }else{
+                m_num[4]+=1;
                 m_total[4]=m_total[4]+create.judge();
               }
               p_average[4]=p_total[4]/num[4];
@@ -244,8 +256,10 @@ main(int argc, char *argv[])
           case 5:
             num[5]+=1;
             if(create.judge()>=0){
+              p_num[5]+=1;
               p_total[5]=p_total[5]+create.judge();
             }else{
+              m_num[5]+=1;
               m_total[5]=m_total[5]+create.judge();
             }
             p_average[5]=p_total[5]/num[5];
@@ -255,9 +269,11 @@ main(int argc, char *argv[])
           case 6:
             num[6]+=1;
             if(create.judge()>=0){
+              p_num[6]+=1;
               p_total[6]=p_total[6]+create.judge();
 
             }else{
+              m_num[6]+=1;
               m_total[6]=m_total[6]+create.judge();
             }
             p_average[6]=p_total[6]/num[6];
@@ -267,8 +283,10 @@ main(int argc, char *argv[])
           case 7:
             num[7]+=1;
             if(create.judge()>=0){
+              p_num[7]+=1;
               p_total[7]=p_total[7]+create.judge();
             }else{
+              m_num[7]+=1;
               m_total[7]=m_total[7]+create.judge();
             }
             p_average[7]=p_total[7]/num[7];
@@ -277,8 +295,10 @@ main(int argc, char *argv[])
           case 8:
             num[8]+=1;
             if(create.judge()>=0){
+              p_num[8]+=1;
               p_total[8]=p_total[9]+create.judge();
             }else{
+              m_num[8]+=1;
               m_total[8]=m_total[8]+create.judge();
             }
             p_average[8]=p_total[8]/num[8];
@@ -287,8 +307,10 @@ main(int argc, char *argv[])
           case 9:
             num[9]+=1;
             if(create.judge()>=0){
+              p_num[9]+=1;
               p_total[9]=p_total[9]+create.judge();
             }else{
+              m_num[9]+=1;
               m_total[9]=m_total[9]+create.judge();
             }
             p_average[9]=p_total[9]/num[9];
@@ -297,8 +319,10 @@ main(int argc, char *argv[])
           case 10:
             num[10]+=1;
             if(create.judge()>=0){
+              p_num[10]+=1;
               p_total[10]=p_total[10]+create.judge();
             }else{
+              m_num[10]+=1;
               m_total[10]=m_total[10]+create.judge();
             }
             p_average[10]=p_total[10]/num[10];
@@ -312,10 +336,12 @@ main(int argc, char *argv[])
       //printf("orizin(%d,%d)",create.return_sx(),create.return_sy());
       //printf("%f\n",create.return_x());
       //printf("x:%f y:%f\n",create.return_x(),create.return_y());
-      printf("hit:%d all:%d ",hit,num[hit]);
+      printf("hit:%d all:%d p_num:%d m_num:%d ",hit,num[hit],p_num[hit],m_num[hit]);
       printf("p_average:%f m_average:%f\n",p_average[hit],m_average[hit]);
       for(int i=0;i<=10;i++){
         num[i]=0;
+        p_num[i]=0;
+        m_num[i]=0;
         p_total[i]=0.0;
         m_total[i]=0.0;
         p_average[i]=0.0;
@@ -325,7 +351,6 @@ main(int argc, char *argv[])
     }
     if(micros()-readT > 10){
       //printf("切っと");
-      int hoge;
       /*if (kbhit()) {
         if(hit > 9){
           hit = 0;
