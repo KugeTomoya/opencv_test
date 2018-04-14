@@ -1,6 +1,6 @@
 #include "create_map.hpp"
 
-#define error_diff 5
+#define error_diff 10
 #define dis_gain 50
 create_map::create_map(){
       //this->
@@ -173,8 +173,8 @@ float create_map::judge(){
   float x = return_sx()+(return_x()*1000.0);
   float y = return_sy()+(return_y()*1000.0);
   switch (return_flag()){
-    case 1://x=2020
-      return x-2020;
+    case 1://x=2050
+      return x-2050;
       break;
     case 2://x=4180
       return x-4180;
