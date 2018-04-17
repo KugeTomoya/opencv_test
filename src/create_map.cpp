@@ -1,6 +1,6 @@
 #include "create_map.hpp"
 
-#define error_diff 10
+#define error_diff 50
 #define dis_gain 50
 create_map::create_map(){
       //this->
