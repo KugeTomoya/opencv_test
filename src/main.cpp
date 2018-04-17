@@ -109,6 +109,10 @@ main(int argc, char *argv[])
   int  p_num[11]={};
   //データの数(+)//
   int  m_num[11]={};
+  //データの最大
+  float max[11]={};
+  //データの最小
+  float min[11]={};
   //データ(+)の合計//
   float p_total[11]={};
   //データ(-)の合計//
@@ -207,6 +211,8 @@ main(int argc, char *argv[])
         switch(create.return_flag()){
           case 1:
             num[1]+=1;
+            if(max[1]<create.judge()){max[1] = create.judge();}
+            if(min[1]>create.judge()){min[1] = create.judge();}
             if(create.judge()>=0){
               p_num[1]+=1;
               p_total[1]=p_total[1]+create.judge();
@@ -219,6 +225,8 @@ main(int argc, char *argv[])
             break;
           case 2:
             num[2]+=1;
+            if(max[2]<create.judge()){max[2] = create.judge();}
+            if(min[2]>create.judge()){min[2] = create.judge();}
             if(create.judge()>=0){
               p_num[2]+=1;
               p_total[2]=p_total[2]+create.judge();
@@ -230,6 +238,8 @@ main(int argc, char *argv[])
             m_average[2]=m_total[2]/num[2];
             break;
           case 3:
+            if(max[3]<create.judge()){max[3] = create.judge();}
+            if(min[3]>create.judge()){min[3] = create.judge();}
             num[3]+=1;
             if(create.judge()>=0){
               p_num[3]+=1;
@@ -242,6 +252,8 @@ main(int argc, char *argv[])
             m_average[3]=m_total[3]/num[3];
             break;
           case 4:
+            if(max[4]<create.judge()){max[4] = create.judge();}
+            if(min[4]>create.judge()){min[4] = create.judge();}
               num[4]+=1;
               if(create.judge()>=0){
                 p_num[4]+=1;
@@ -254,6 +266,8 @@ main(int argc, char *argv[])
               m_average[4]=m_total[4]/num[4];
               break;
           case 5:
+            if(max[5]<create.judge()){max[5] = create.judge();}
+            if(min[5]>create.judge()){min[5] = create.judge();}
             num[5]+=1;
             if(create.judge()>=0){
               p_num[5]+=1;
@@ -267,6 +281,8 @@ main(int argc, char *argv[])
             break;
 
           case 6:
+            if(max[6]<create.judge()){max[6] = create.judge();}
+            if(min[6]>create.judge()){min[6] = create.judge();}
             num[6]+=1;
             if(create.judge()>=0){
               p_num[6]+=1;
@@ -281,6 +297,8 @@ main(int argc, char *argv[])
             break;
 
           case 7:
+            if(max[7]<create.judge()){max[7] = create.judge();}
+            if(min[7]>create.judge()){min[7] = create.judge();}
             num[7]+=1;
             if(create.judge()>=0){
               p_num[7]+=1;
@@ -293,6 +311,8 @@ main(int argc, char *argv[])
             m_average[7]=m_total[7]/num[7];
             break;
           case 8:
+            if(max[8]<create.judge()){max[8] = create.judge();}
+            if(min[8]>create.judge()){min[8] = create.judge();}
             num[8]+=1;
             if(create.judge()>=0){
               p_num[8]+=1;
@@ -305,6 +325,8 @@ main(int argc, char *argv[])
             m_average[8]=m_total[8]/num[8];
             break;
           case 9:
+            if(max[9]<create.judge()){max[9] = create.judge();}
+            if(min[9]>create.judge()){min[9] = create.judge();}
             num[9]+=1;
             if(create.judge()>=0){
               p_num[9]+=1;
@@ -317,6 +339,8 @@ main(int argc, char *argv[])
             m_average[9]=m_total[9]/num[9];
             break;
           case 10:
+            if(max[10]<create.judge()){max[10] = create.judge();}
+            if(min[10]>create.judge()){min[10] = create.judge();}
             num[10]+=1;
             if(create.judge()>=0){
               p_num[10]+=1;
@@ -337,9 +361,12 @@ main(int argc, char *argv[])
       //printf("%f\n",create.return_x());
       //printf("x:%f y:%f\n",create.return_x(),create.return_y());
       printf("hit:%d all:%d p_num:%d m_num:%d ",hit,num[hit],p_num[hit],m_num[hit]);
-      printf("p_average:%f m_average:%f\n",p_average[hit],m_average[hit]);
+      //printf("p_average:%f m_average:%f\n",p_average[hit],m_average[hit]);
+      printf("max:%f min:%f\n",max[hit],min[hit]);
       for(int i=0;i<=10;i++){
         num[i]=0;
+        max[i]=0.0;
+        min[i]=0.0;
         p_num[i]=0;
         m_num[i]=0;
         p_total[i]=0.0;
