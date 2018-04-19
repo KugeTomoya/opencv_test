@@ -360,9 +360,9 @@ main(int argc, char *argv[])
       //printf("orizin(%d,%d)",create.return_sx(),create.return_sy());
       //printf("%f\n",create.return_x());
       //printf("x:%f y:%f\n",create.return_x(),create.return_y());
-      printf("hit:%d all:%d p_num:%d m_num:%d ",hit,num[hit],p_num[hit],m_num[hit]);
-      //printf("p_average:%f m_average:%f\n",p_average[hit],m_average[hit]);
-      printf("max:%f min:%f\n",max[hit],min[hit]);
+      printf("hit:%d p_num:%d m_num:%d ",hit,num[hit],p_num[hit],m_num[hit]);
+      printf("p_ave:%0.2f m_ave:%0.2f ",p_average[hit],m_average[hit]);
+      printf("max:%0.2f min:%0.2f\n",max[hit],min[hit]);
       for(int i=0;i<=10;i++){
         num[i]=0;
         max[i]=0.0;
