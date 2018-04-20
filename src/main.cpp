@@ -102,6 +102,8 @@ main(int argc, char *argv[])
   float good_y[1440];
   int reset_flag = 0;
   int old_hit = 0;
+  int loop_cnt = 0;
+
 
   //データの数//
   int num[11]={};
@@ -385,27 +387,34 @@ main(int argc, char *argv[])
           case 0:
             break;
         }
-
       }
+
+      loop_cnt+=1;
       //printf("orizin(%d,%d)",create.return_sx(),create.return_sy());
       //printf("%f\n",create.return_x());
       //printf("x:%f y:%f\n",create.return_x(),create.return_y());
-      printf("hit:%d num:%d p_num:%d m_num:%d ",hit,num[hit],p_num[hit],m_num[hit]);
-      printf("ave:%0.2f ",average[hit]);
-      printf("p_ave:%0.2f m_ave:%0.2f ",p_average[hit],m_average[hit]);
-      printf("max:%0.2f min:%0.2f\n",max[hit],min[hit]);
-      for(int i=0;i<=10;i++){
-        num[i]=0;
-        max[i]=0.0;
-        min[i]=0.0;
-        p_num[i]=0;
-        m_num[i]=0;
-        total[i]=0.0;
-        p_total[i]=0.0;
-        m_total[i]=0.0;
-        average[i]=0.0;
-        p_average[i]=0.0;
-        m_average[i]=0.0;
+
+        if(loop_cnt>=350){
+          printf("hit:%d num:%d p_num:%d m_num:%d ",hit,num[hit],p_num[hit],m_num[hit]);
+          printf("ave:%0.2f ",average[hit]);
+          printf("p_ave:%0.2f m_ave:%0.2f ",p_average[hit],m_average[hit]);
+          printf("max:%0.2f min:%0.2f\n",max[hit],min[hit]);
+        for(int i=0;i<=10;i++){
+          num[i]=0;
+          max[i]=0.0;
+          min[i]=0.0;
+          p_num[i]=0;
+          m_num[i]=0;
+          total[i]=0.0;
+          p_total[i]=0.0;
+          m_total[i]=0.0;
+          average[i]=0.0;
+          p_average[i]=0.0;
+          m_average[i]=0.0;
+        }
+        loop_cnt=0;
+      }else{
+
       }
       //printf("%d\n",good_data);
     }
