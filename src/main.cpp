@@ -92,8 +92,9 @@ main(int argc, char *argv[])
   float y[1440];
   float rev_x[1440];
   float rev_y[1440];
-  float dis[1440];
-  float rad[1440];
+  float dis[1440]={};
+  float old_dis[1440]={};
+  float rad[1440]={};
   int step = 0;
   int flag;
   int hit=0;
@@ -127,7 +128,6 @@ main(int argc, char *argv[])
   float p_average[11]={};
   //データ(-)の平均//
   float m_average[11]={};
-
 
   ros::init(argc, argv, "scan");
   scan scan;
@@ -203,15 +203,16 @@ main(int argc, char *argv[])
 
     ros::spinOnce();
     if(micros() - scanT > 10000){
-
-
       scanT = micros();
       create.show();
       good_data = 0;
       for(step = 0;step < 1080;step=step+1){
-
+        old_dis[step] = dis[step];
         rad[step] = (M_PI/180)*(step*0.25);
-        dis[step] = scan.scan_val(step);
+        if(fabsf(old_dis[step]-dis[step])>0.005){
+          dis[step]=0.0;
+        }
+        else{dis[step] = scan.scan_val(step);}
         create.create(dis[step],rad[step],step,flag);
 
         switch(create.return_flag()){
@@ -394,7 +395,7 @@ main(int argc, char *argv[])
       //printf("%f\n",create.return_x());
       //printf("x:%f y:%f\n",create.return_x(),create.return_y());
 
-        if(loop_cnt>=350){
+        if(loop_cnt>=300){
           printf("hit:%d num:%d p_num:%d m_num:%d ",hit,num[hit],p_num[hit],m_num[hit]);
           printf("ave:%0.2f ",average[hit]);
           printf("p_ave:%0.2f m_ave:%0.2f ",p_average[hit],m_average[hit]);
