@@ -209,7 +209,7 @@ main(int argc, char *argv[])
       for(step = 0;step < 1080;step=step+1){
         old_dis[step] = dis[step];
         rad[step] = (M_PI/180)*(step*0.25);
-        if(fabsf(old_dis[step]-dis[step])>0.005){
+        if(fabsf(old_dis[step]-dis[step])>0.002){
           dis[step]=0.0;
         }
         else{dis[step] = scan.scan_val(step);}
