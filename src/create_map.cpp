@@ -1,6 +1,6 @@
 #include "create_map.hpp"
 
-#define error_diff 15
+#define error_diff 45
 #define dis_gain 50
 create_map::create_map(){
       //this->
@@ -170,8 +170,9 @@ void create_map::create(float dis,float rad,int step,int flag){
 }
 
 float create_map::judge(){
-  float x = return_sx()+(return_x()*1000.0);
-  float y = return_sy()+(return_y()*1000.0);
+  float x=return_val_x();
+  float y=return_val_y();
+
   switch (return_flag()){
     case 1://x=2050
       return x-2050;
@@ -212,6 +213,15 @@ float create_map::judge(){
   }
 }
 
+float create_map::return_val_x(){
+  value_x = return_sx()+(return_x()*1000.0);
+  return value_x;
+}
+float create_map::return_val_y(){
+  value_y = return_sy()+(return_y()*1000.0);
+  return value_y;
+}
+
 float create_map::return_x(){
   return ret_x;
 }
@@ -225,7 +235,25 @@ void create_map::hit_switch(int *hit){
 int create_map::ret_hit_flag(){
   return hit_flag;
 }
-
+void create_map::med_create(float med,int hit){
+  switch (hit) {
+    case 1:
+      cv::line(img, cv::Point(101,101), cv::Point(101+((int)med/20),807), cv::Scalar(0,0,255), 1, 4);
+      break;
+    case 2:
+      cv::line(img, cv::Point(209,454), cv::Point(209+((int)med/20),606), cv::Scalar(0,0,255), 1, 4);
+      break;
+    case 3:
+      cv::line(img, cv::Point(372,101), cv::Point(372+((int)med/20),454), cv::Scalar(0,0,255), 1, 4);
+      break;
+    case 4:
+      cv::line(img, cv::Point(372,606), cv::Point(372+((int)med/20),706), cv::Scalar(0,0,255), 1, 4);
+      break;
+    case 5:
+      cv::line(img, cv::Point(535,706), cv::Point(535+((int)med/20),807), cv::Scalar(0,0,255), 1, 4);
+      break;
+  }
+}
 void create_map::show(){
   //cv::line(img, cv::Point(0, 454),cv::Point(908,454), cv::Scalar(0,200,0), 3, 4);
   //cv::line(img, cv::Point(454,0), cv::Point(454,908), cv::Scalar(200,0,0), 3, 4);

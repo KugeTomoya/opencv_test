@@ -98,11 +98,11 @@ main(int argc, char *argv[])
   int step = 0;
   int flag;
   int hit=0;
+  int d_hit=0;
   int good_data = 0;
   float good_x[1440];
   float good_y[1440];
   int reset_flag = 0;
-  int old_hit = 0;
   int loop_cnt = 0;
 
 
@@ -128,6 +128,32 @@ main(int argc, char *argv[])
   float p_average[11]={};
   //データ(-)の平均//
   float m_average[11]={};
+  //誤差の格納//
+  float diff_box[11][1080];
+  //一時的に格納//
+  float tmp[11]={};
+  //中央値//
+  float med[11]={};
+  //偏差//
+  float devi[11]={};
+  //分散//
+  float disp[11]={};
+  //標準偏差//
+  float std_devi[11]={};
+  float old_ave[11]={};
+
+  int q;
+  int w;
+  int i;
+  int j;
+  int oldave_flag=1;
+  int old_hit=0;
+  int hit_cnt[11]={};
+  for(q=0;q<11;q++){
+    for(w=0;w<1080;w++){
+      diff_box[q][w]=0.0;
+    }
+  }
 
   ros::init(argc, argv, "scan");
   scan scan;
@@ -194,30 +220,38 @@ main(int argc, char *argv[])
   while(ros::ok()){
     if (kbhit()) {
       if(hit > 9){
-        hit = 0;
+        d_hit = 0;
       }
       //printf("'%c'を押しました。\n", getchar());
       getchar();
-      hit+=1;
+      d_hit+=1;
     }
 
     ros::spinOnce();
+
     if(micros() - scanT > 10000){
+      hit=d_hit;
       scanT = micros();
       create.show();
       good_data = 0;
       for(step = 0;step < 1080;step=step+1){
         old_dis[step] = dis[step];
         rad[step] = (M_PI/180)*(step*0.25);
-        if(fabsf(old_dis[step]-dis[step])>0.002){
+        if(fabsf(old_dis[step]-dis[step])>0.02){
           dis[step]=0.0;
         }
+
         else{dis[step] = scan.scan_val(step);}
+
         create.create(dis[step],rad[step],step,flag);
 
         switch(create.return_flag()){
+          /*case 1:
+          num[1]+=1;
+          diff_box[create.return_flag()][num[1]]=create.return_val_x();*/
           case 1:
             num[1]+=1;
+            diff_box[create.return_flag()][num[1]]=create.judge();
             if(max[1]<create.judge()){max[1] = create.judge();}
             if(min[1]>create.judge()){min[1] = create.judge();}
             total[1]= total[1]+create.judge();
@@ -234,6 +268,7 @@ main(int argc, char *argv[])
             break;
           case 2:
             num[2]+=1;
+            diff_box[create.return_flag()][num[2]]=create.judge();
             if(max[2]<create.judge()){max[2] = create.judge();}
             if(min[2]>create.judge()){min[2] = create.judge();}
             total[2]= total[2]+create.judge();
@@ -249,9 +284,10 @@ main(int argc, char *argv[])
             m_average[2]=m_total[2]/ (float)num[2];
             break;
           case 3:
+            num[3]+=1;
+            diff_box[create.return_flag()][num[3]]=create.judge();
             if(max[3]<create.judge()){max[3] = create.judge();}
             if(min[3]>create.judge()){min[3] = create.judge();}
-            num[3]+=1;
             total[3]= total[3]+create.judge();
             if(create.judge()>=0){
               p_num[3]+=1;
@@ -267,24 +303,26 @@ main(int argc, char *argv[])
           case 4:
             if(max[4]<create.judge()){max[4] = create.judge();}
             if(min[4]>create.judge()){min[4] = create.judge();}
-              num[4]+=1;
-              total[4]= total[4]+create.judge();
+            num[4]+=1;
+            diff_box[create.return_flag()][num[4]]=create.judge();
+            total[4]= total[4]+create.judge();
 
-              if(create.judge()>=0){
-                p_num[4]+=1;
-                p_total[4]=p_total[4]+create.judge();
-              }else{
-                m_num[4]+=1;
-                m_total[4]=m_total[4]+create.judge();
-              }
-              average[4] = total[4] / (float)num[4];
-              p_average[4]=p_total[4]/ (float)num[4];
-              m_average[4]=m_total[4]/ (float)num[4];
-              break;
+            if(create.judge()>=0){
+              p_num[4]+=1;
+              p_total[4]=p_total[4]+create.judge();
+            }else{
+              m_num[4]+=1;
+              m_total[4]=m_total[4]+create.judge();
+            }
+            average[4] = total[4] / (float)num[4];
+            p_average[4]=p_total[4]/ (float)num[4];
+            m_average[4]=m_total[4]/ (float)num[4];
+            break;
           case 5:
             if(max[5]<create.judge()){max[5] = create.judge();}
             if(min[5]>create.judge()){min[5] = create.judge();}
             num[5]+=1;
+            diff_box[create.return_flag()][num[5]]=create.judge();
             total[5]= total[5]+create.judge();
 
             if(create.judge()>=0){
@@ -303,6 +341,7 @@ main(int argc, char *argv[])
             if(max[6]<create.judge()){max[6] = create.judge();}
             if(min[6]>create.judge()){min[6] = create.judge();}
             num[6]+=1;
+            diff_box[create.return_flag()][num[6]]=create.judge();
             total[6]= total[6]+create.judge();
 
             if(create.judge()>=0){
@@ -322,6 +361,7 @@ main(int argc, char *argv[])
             if(max[7]<create.judge()){max[7] = create.judge();}
             if(min[7]>create.judge()){min[7] = create.judge();}
             num[7]+=1;
+            diff_box[create.return_flag()][num[7]]=create.judge();
             total[7]= total[7]+create.judge();
 
             if(create.judge()>=0){
@@ -339,6 +379,7 @@ main(int argc, char *argv[])
             if(max[8]<create.judge()){max[8] = create.judge();}
             if(min[8]>create.judge()){min[8] = create.judge();}
             num[8]+=1;
+            diff_box[create.return_flag()][num[8]]=create.judge();
             total[8]= total[8]+create.judge();
 
             if(create.judge()>=0){
@@ -356,6 +397,7 @@ main(int argc, char *argv[])
             if(max[9]<create.judge()){max[9] = create.judge();}
             if(min[9]>create.judge()){min[9] = create.judge();}
             num[9]+=1;
+            diff_box[create.return_flag()][num[9]]=create.judge();
             total[9]= total[9]+create.judge();
 
             if(create.judge()>=0){
@@ -373,6 +415,7 @@ main(int argc, char *argv[])
             if(max[10]<create.judge()){max[10] = create.judge();}
             if(min[10]>create.judge()){min[10] = create.judge();}
             num[10]+=1;
+            diff_box[create.return_flag()][num[10]]=create.judge();
             total[10]= total[10]+create.judge();
             if(create.judge()>=0){
               p_num[10]+=1;
@@ -389,56 +432,84 @@ main(int argc, char *argv[])
             break;
         }
       }
-
-      loop_cnt+=1;
-      //printf("orizin(%d,%d)",create.return_sx(),create.return_sy());
-      //printf("%f\n",create.return_x());
-      //printf("x:%f y:%f\n",create.return_x(),create.return_y());
-
-        if(loop_cnt>=300){
-          printf("hit:%d num:%d p_num:%d m_num:%d ",hit,num[hit],p_num[hit],m_num[hit]);
-          printf("ave:%0.2f ",average[hit]);
-          printf("p_ave:%0.2f m_ave:%0.2f ",p_average[hit],m_average[hit]);
-          printf("max:%0.2f min:%0.2f\n",max[hit],min[hit]);
-        for(int i=0;i<=10;i++){
-          num[i]=0;
-          max[i]=0.0;
-          min[i]=0.0;
-          p_num[i]=0;
-          m_num[i]=0;
-          total[i]=0.0;
-          p_total[i]=0.0;
-          m_total[i]=0.0;
-          average[i]=0.0;
-          p_average[i]=0.0;
-          m_average[i]=0.0;
-        }
-        loop_cnt=0;
-      }else{
-
-      }
       //printf("%d\n",good_data);
-    }
-    if(micros()-readT > 10){
-      //printf("切っと");
-      /*if (kbhit()) {
-        if(hit > 9){
-          hit = 0;
-          reset_flag = 0;
+    for(i=0;i<num[hit];i++){
+      for(j=0;j<num[hit]-1;j++){
+        if(diff_box[hit][num[hit]]>diff_box[hit][num[hit]+1]){
+          tmp[hit]=diff_box[hit][num[hit]];
+          diff_box[hit][num[hit]]=diff_box[hit][num[hit]+1];
+          diff_box[hit][hit[num]+1]=tmp[hit];
         }
-        //printf("'%c'を押しました。\n", getchar());
-        getchar();
-        hit+=1;
       }
-      create.hit_switch(&hit);
-      //printf("deg:%d \n",create.return_flag());
-      if(create.ret_hit_flag()!=old_hit){
-        printf("%d\n",create.ret_hit_flag());
-      }
-      old_hit = create.ret_hit_flag();
-      */
-      //printf("%d\n",create.ret_hit_flag());
-
     }
+
+
+
+
+    if(hit != old_hit){
+      hit_cnt[hit]=0;
+    }
+
+    if(hit_cnt[hit]==0){
+      old_ave[hit]=average[hit];
+    }
+
+
+    if(num[hit]%2==1){
+      med[hit]=diff_box[hit][(num[hit]-1)/2];
+    }else if (num[hit]%2==0){
+      med[hit]= (diff_box[hit][(num[hit]/2)-1]+diff_box[hit][num[hit]/2])/2.0;
+    }
+
+    for(i=0;i<num[hit];i++){
+      devi[hit] += (diff_box[hit][num[hit]]-average[hit])*(diff_box[hit][num[hit]]-average[hit]);
+    }
+    disp[hit]=devi[hit]/num[hit];
+    std_devi[hit]=sqrtf(disp[hit]);
+    create.med_create(med[hit],hit);
+
+    if(fabsf(average[hit]-old_ave[hit])<=1.0){
+      //average[hit]=old_ave[hit];
+    }else{
+      average[hit]=old_ave[hit];
+      //average[hit]=average[hit];
+    }
+    old_ave[hit]=average[hit];
+
+
+    hit_cnt[hit]++;
+    old_hit=hit;
+    printf("hit:%2d num:%2d p_num:%2d m_num:%2d ",hit,num[hit],p_num[hit],m_num[hit]);
+    printf("ave:%6.2f ",average[hit]);
+    printf("p_ave:%6.2f m_ave:%6.2f ",p_average[hit],m_average[hit]);
+    printf("max:%6.2f min:%6.2f ",max[hit],min[hit]);
+    printf("med:%6.2f 標準偏差:%6.3f\n",med[hit],std_devi[hit]);
+  //  printf("hit_cnt:%d\n",hit_cnt[hit]);
+    //printf("%6.3f\n",med[hit] );
+    for(q=0;q<11;q++){
+      tmp[q]=0.0;
+      med[q]=0.0;
+      num[q]=0;
+      max[q]=0.0;
+      min[q]=0.0;
+      p_num[q]=0;
+      m_num[q]=0;
+      total[q]=0.0;
+      p_total[q]=0.0;
+      m_total[q]=0.0;
+      average[q]=0.0;
+      p_average[q]=0.0;
+      m_average[q]=0.0;
+      devi[q]=0.0;
+      std_devi[q]=0.0;
+      disp[q]=0.0;
+      for(w=0;w<1080;w++){
+        diff_box[q][w]=0.0;
+      }
+    }
+
+  }
+
 }
+
 }

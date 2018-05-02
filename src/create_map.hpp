@@ -26,9 +26,12 @@ public:
     int return_flag();
 
     float judge();
+    float return_val_x();
+    float return_val_y();
 
 
     void hit_switch(int *hit);
+    void med_create(float med,int hit);
     int ret_hit_flag();
 
 private:
@@ -42,6 +45,9 @@ private:
     float rev_rad;
     float ret_x;
     float ret_y;
+    float value_x;
+    float value_y;
+
     int step_check[1440];
     int step;
     int ret_flag;
