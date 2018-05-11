@@ -53,7 +53,7 @@ int64_t micros() {
     return (microsSource.tv_sec-offsetSeconds)*(int64_t)1000000+(microsSource.tv_usec-offsetmicros);
 }
 
-// 画像を画像に貼り付ける関数
+/* 画像を画像に貼り付ける関数
 void paste(cv::Mat dst, cv::Mat src, int x, int y, int width, int height) {
 	cv::Mat resized_img;
 	cv::resize(src, resized_img, cv::Size(width, height));
@@ -74,7 +74,7 @@ void paste(cv::Mat dst, cv::Mat src, int x, int y, int width, int height) {
 // 画像を画像に貼り付ける関数（サイズ指定を省略したバージョン）
 void paste(cv::Mat dst, cv::Mat src, int x, int y) {
 	paste(dst, src, x, y, src.rows, src.cols);
-}
+}*/
 
 
 
@@ -142,10 +142,18 @@ main(int argc, char *argv[])
   float std_devi[11]={};
   float old_ave[11]={};
 
+  int get_num;
+
+
   int q;
   int w;
   int i;
   int j;
+  int cnt_flag=1;
+  int first_cnt=0;
+  int key_num;
+  int old_key_num;
+
   int oldave_flag=1;
   int old_hit=0;
   int hit_cnt[11]={};
@@ -157,6 +165,9 @@ main(int argc, char *argv[])
 
   ros::init(argc, argv, "scan");
   scan scan;
+  cv::Mat coat_img;
+  cv::Mat src_img=cv::imread("/home/kuge/catkin_ws/src/opencv_test/src/coat_numbers.jpg", 1);
+  cv::resize(src_img,coat_img,cv::Size(), 0.5,0.5);
   /*printf("場所を選んでキー入力\n右上=1\n右下=2\n左上=3\n右真ん中上=4\n右真ん中下=5\n右真ん中下の下=6\n右下の上=7\n右下の下=8\n");
   scanf("%d",&flag);
   if(flag < 1 || flag>8){
@@ -165,7 +176,14 @@ main(int argc, char *argv[])
   }*/
   if(reset_flag==0){
     hit = 0;
-    printf("場所を選んでキー入力\n右上=1\n右下=2\n左上=3\n右真ん中上=4\n右真ん中下=5\n右真ん中下の下=6\n右下の上=7\n右下の下=8\n");
+    printf("場所を選んでキをー入力してEnterを押してください\n");
+    printf("\n");
+    printf("その後は対応した数字を押すとLRFの場所が変わります\n");
+    printf("\n");
+    printf("キー入力で線のあたっている場所の情報を切り替えます\n");
+    cv::namedWindow("LRFの場所", CV_WINDOW_AUTOSIZE|CV_WINDOW_FREERATIO);
+    cv::imshow("LRFの場所", coat_img);
+    cv::waitKey(1);
     scanf("%d",&flag);
     reset_flag = 1;
     if(flag < 1 || flag>8){
@@ -173,6 +191,7 @@ main(int argc, char *argv[])
       return 0;
     }
   }
+
   switch (flag){
     case 1:
     create.origin(2250,2250);
@@ -223,14 +242,70 @@ main(int argc, char *argv[])
         d_hit = 0;
       }
       //printf("'%c'を押しました。\n", getchar());
-      getchar();
+      //getchar();
+      get_num=getchar();
       d_hit+=1;
-    }
 
+    }
     ros::spinOnce();
 
     if(micros() - scanT > 10000){
+      switch (get_num){
+        case '1':
+        create.origin(2250,2250);
+        create.set_rev_rad(225.0);
+        key_num=1;
+        break;
+
+        case '2':
+        create.origin(2250,15920);
+        create.set_rev_rad(315.0);
+        key_num=2;
+        break;
+
+        case '3':
+        create.origin(7240,2250);
+        create.set_rev_rad(135.0);
+        key_num=3;
+        break;
+
+        case '4':
+        create.origin(7240,8920);
+        create.set_rev_rad(45.0);
+        key_num=4;
+        break;
+
+        case '5':
+        create.origin(7240,12400);
+        create.set_rev_rad(135.0);
+        key_num=5;
+        break;
+
+        case '6':
+        create.origin(7240,13970);
+        create.set_rev_rad(45.0);
+        key_num=6;
+        break;
+
+        case '7':
+        create.origin(10500,14350);
+        create.set_rev_rad(135.0);
+        key_num=7;
+        break;
+
+        case '8':
+        create.origin(10500,15920);
+        create.set_rev_rad(45.0);
+        key_num=8;
+        break;
+
+        default:
+        break;
+      }
       hit=d_hit;
+      if (hit>10) {
+        hit=10;
+      }
       scanT = micros();
       create.show();
       good_data = 0;
@@ -444,14 +519,31 @@ main(int argc, char *argv[])
     }
 
 
+    if(key_num!=old_key_num){
+      for(int res=0;res<11;res++){
+        old_ave[res]=0.0;
+      }
+      cnt_flag=1;
 
-
-    if(hit != old_hit){
-      hit_cnt[hit]=0;
     }
 
-    if(hit_cnt[hit]==0){
-      old_ave[hit]=average[hit];
+    if(cnt_flag != 0){
+      first_cnt=1;
+    }
+
+    if(first_cnt==1){
+      old_ave[1]=average[1];
+      old_ave[2]=average[2];
+      old_ave[3]=average[3];
+      old_ave[4]=average[4];
+      old_ave[5]=average[5];
+      old_ave[6]=average[6];
+      old_ave[7]=average[7];
+      old_ave[8]=average[8];
+      old_ave[9]=average[9];
+      old_ave[10]=average[10];
+      cnt_flag=0;
+      first_cnt=0;
     }
 
 
@@ -468,22 +560,36 @@ main(int argc, char *argv[])
     std_devi[hit]=sqrtf(disp[hit]);
     create.med_create(med[hit],hit);
 
-    if(fabsf(average[hit]-old_ave[hit])<=1.0){
-      //average[hit]=old_ave[hit];
-    }else{
-      average[hit]=old_ave[hit];
-      //average[hit]=average[hit];
+    for(int av=0;av<11;av++){
+      if(fabsf(average[av]-old_ave[av])<=0.5){
+        //average[hit]=old_ave[hit];
+      }else{
+        average[av]=old_ave[av];
+        //average[hit]=average[hit];
+      }
     }
-    old_ave[hit]=average[hit];
+    //old_ave[hit]=average[hit];
+    old_ave[1]=average[1];
+    old_ave[2]=average[2];
+    old_ave[3]=average[3];
+    old_ave[4]=average[4];
+    old_ave[5]=average[5];
+    old_ave[6]=average[6];
+    old_ave[7]=average[7];
+    old_ave[8]=average[8];
+    old_ave[9]=average[9];
+    old_ave[10]=average[10];
+
 
 
     hit_cnt[hit]++;
     old_hit=hit;
-    printf("hit:%2d num:%2d p_num:%2d m_num:%2d ",hit,num[hit],p_num[hit],m_num[hit]);
-    printf("ave:%6.2f ",average[hit]);
-    printf("p_ave:%6.2f m_ave:%6.2f ",p_average[hit],m_average[hit]);
-    printf("max:%6.2f min:%6.2f ",max[hit],min[hit]);
-    printf("med:%6.2f 標準偏差:%6.3f\n",med[hit],std_devi[hit]);
+    old_key_num=key_num;
+    printf("hit:%2d num:%2d ",hit,num[hit]);
+    printf("ave1:%6.2f ave2:%6.2f ave3:%6.2f ave4:%6.2f ave5:%6.2f ave6:%6.2f ave7:%6.2f ave8:%6.2f ave9:%6.2f ave10:%6.2f \n ",average[1],average[2],average[3],average[4],average[5],average[6],average[7],average[8],average[9],average[10]);
+    //printf("p_ave:%6.2f m_ave:%6.2f ",p_average[hit],m_average[hit]);
+    //printf("max:%6.2f min:%6.2f ",max[hit],min[hit]);
+    //printf("med:%6.2f 標準偏差:%6.3f\n",med[hit],std_devi[hit]);
   //  printf("hit_cnt:%d\n",hit_cnt[hit]);
     //printf("%6.3f\n",med[hit] );
     for(q=0;q<11;q++){
