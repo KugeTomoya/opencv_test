@@ -1,16 +1,23 @@
+//いつもの//
 #include <stdio.h>
+//opencv//
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
+//ROS//
 #include <ros/ros.h>
+//時間関係//
 #include "time.h"
 #include <sys/time.h>
+//math.h//
 #include <math.h>
-#include "scan.cpp"
-#include "create_map.cpp"
+//キー入力//
 #include <termios.h>
 #include <unistd.h>
 #include <fcntl.h>
+//クラス分けしたやつ//
+#include "scan.cpp"
+#include "create_map.cpp"
 
 static struct timeval microsSource;
 static int64_t offsetSeconds;
@@ -586,7 +593,8 @@ main(int argc, char *argv[])
     old_hit=hit;
     old_key_num=key_num;
     printf("hit:%2d num:%2d ",hit,num[hit]);
-    printf("ave1:%6.2f ave2:%6.2f ave3:%6.2f ave4:%6.2f ave5:%6.2f ave6:%6.2f ave7:%6.2f ave8:%6.2f ave9:%6.2f ave10:%6.2f \n ",average[1],average[2],average[3],average[4],average[5],average[6],average[7],average[8],average[9],average[10]);
+    printf("hit%d:%6.2f\n",hit,average[hit]);
+    //printf("ave1:%6.2f ave2:%6.2f ave3:%6.2f ave4:%6.2f ave5:%6.2f ave6:%6.2f ave7:%6.2f ave8:%6.2f ave9:%6.2f ave10:%6.2f \n ",average[1],average[2],average[3],average[4],average[5],average[6],average[7],average[8],average[9],average[10]);
     //printf("p_ave:%6.2f m_ave:%6.2f ",p_average[hit],m_average[hit]);
     //printf("max:%6.2f min:%6.2f ",max[hit],min[hit]);
     //printf("med:%6.2f 標準偏差:%6.3f\n",med[hit],std_devi[hit]);
